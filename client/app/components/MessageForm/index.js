@@ -13,7 +13,6 @@ class MessageForm extends Component {
       },
       success: ((data) => actions.addMessage(data))
     })
-    actions.addMessage(this.textMessage.value)
   }
 
   render() {

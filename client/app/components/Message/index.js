@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { Component } from 'react'
 
-const Message = ({text}) => {
+const Message = ({text, id, actions}) => {
   return(
-    <div>
+    <div onClick={actions.toggleDisplayState} data-message-id={id}>
       {text}
     </div>
   )
