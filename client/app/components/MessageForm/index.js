@@ -1,9 +1,18 @@
 import React, { Component } from 'react'
+import $ from 'jquery'
 
 // extends ComponentするとLifecycle methodsが使える
 class MessageForm extends Component {
   onSubmit() {
     const { actions } = this.props
+    $.ajax({
+      type: 'POST',
+      url: '/api/messages',
+      data: {
+        message: { text: this.textMessage.value }
+      },
+      success: ((data) => actions.addMessage(data))
+    })
     actions.addMessage(this.textMessage.value)
   }
 
