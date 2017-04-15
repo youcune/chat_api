@@ -5,27 +5,49 @@ import MessageForm from '../MessageForm'
 
 class MessageList extends Component {
   componentDidMount() {
-    const { actions } = this.props // stands for const actions = this.props.actions
+    const { actions } = this.props
     $.ajax({
       type: 'GET',
       url: '/api/messages',
-      success: ((data) => { actions.createMessageList(data) })
+      success: (
+        (data) => actions.createMessageList(data)
+      )
     })
   }
 
-  renderMessage(message) {
+  onToggleDisplay(id) {
+    return () => {
+      const { actions } = this.props
+      actions.toggleDisplayMessage(id)
+    }
+  }
+
+  onDelete(id) {
+    return () => {
+      const { actions } = this.props
+      $.ajax({
+        type: 'DELETE',
+        url: `/api/messages/${id}`,
+        success: (
+          (data) => actions.deleteMessage(id)
+        )
+      })
+    }
+  }
+
+  renderMessage(actions, message) {
     return (
       message.displayState ?
-      <Message key={message.id} id={message.id} text={message.text} actions={this.props.actions} /> :
-      <MessageForm key={message.id} text={message.text} />
+        <Message key={message.id} actions={actions} id={message.id} text={message.text} onClick={this.onToggleDisplay(message.id).bind(this)} /> :
+        <MessageForm key={message.id} actions={actions} message={message} onCancelClick={this.onToggleDisplay(message.id).bind(this)} onDeleteClick={this.onDelete(message.id).bind(this)} />
     )
   }
 
   render() {
-    const { messages } = this.props
+    const { messages, actions } = this.props
     return (
       <div>
-        {messages.map((message) => this.renderMessage(message) )}
+        {messages.map((message) => this.renderMessage(actions, message))}
       </div>
     )
   }
