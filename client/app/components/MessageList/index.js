@@ -22,11 +22,24 @@ class MessageList extends Component {
     }
   }
 
+  onDelete(id) {
+    return () => {
+      const { actions } = this.props
+      $.ajax({
+        type: 'DELETE',
+        url: `/api/messages/${id}`,
+        success: (
+          (data) => actions.deleteMessage(id)
+        )
+      })
+    }
+  }
+
   renderMessage(actions, message) {
     return (
       message.displayState ?
         <Message key={message.id} actions={actions} id={message.id} text={message.text} onClick={this.onToggleDisplay(message.id).bind(this)} /> :
-        <MessageForm key={message.id} actions={actions} message={message} onCancelClick={this.onToggleDisplay(message.id).bind(this)} />
+        <MessageForm key={message.id} actions={actions} message={message} onCancelClick={this.onToggleDisplay(message.id).bind(this)} onDeleteClick={this.onDelete(message.id).bind(this)} />
     )
   }
 
